@@ -8,6 +8,7 @@ body {
 }
 
 .wrapper {
+  margin: 0 auto;
   backdrop-filter: blur(5.5px);
   -webkit-backdrop-filter: blur(5.5px);
   background: rgba(255, 255, 255, 0.75);
