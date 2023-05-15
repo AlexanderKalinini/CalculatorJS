@@ -88,7 +88,7 @@ calculator.addEventListener("click", (event) => {
     return;
   }
   if (buttonValue === "=") {
-    screen.textContent = calculate(screen.textContent);
+    screen.textContent = calculate(screen.textContent).toFixed(5);
     return;
   }
 
