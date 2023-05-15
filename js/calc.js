@@ -1,6 +1,4 @@
 "use strict";
-
-
 const screen = document.querySelector(".screen");
 const calcButtons = document.querySelectorAll(".calc-button");
 const calculator = document.querySelector(".wrapper");
@@ -17,60 +15,82 @@ function deleteLast(str) {
   screen.textContent = str.slice(0, -1);
 }
 
-function calculate(str) {
-  const regExp = /[0-9]+|[-×+÷]/g;
-  let arr = str.match(regExp);
-  let number = +arr[0];
-  for (let str of arr) {
-		let nextNum =arr[arr.indexOf(str) + 1] 
-    if (!nextNum) break;
-    if (str === "+") {
-      number += +nextNum;
-    }
-    if (str === "-") {
-      number -= +nextNum;
-    }
-    if (str === "÷") {
-      number /= +nextNum;
-    }
-    if (str === "×") {
-      number *= +nextNum;
-    }
-  }
-  return number;
+function deleteAll() {
+  screen.textContent = 0;
 }
 
+function sum(a, b) {
+  return a + b;
+}
+function subtraction(a, b) {
+  return a - b;
+}
+function division(a, b) {
+  if (b === 0) return a + "÷" + b;
+  return a / b;
+}
+function multiply(a, b) {
+  return a * b;
+}
+
+function calculate(str) {
+  const regExp = /([-×+÷])/;
+  let arr = str.split(regExp);
+  const numberFirst = +arr[0];
+  if (arr[2] === "" || arr[2] === undefined) return numberFirst;
+
+  const numberSecond = +arr[2];
+
+  const sign = arr[1];
+  console.log(arr);
+  console.log("Second", numberSecond);
+
+  if (sign === "+") {
+    return sum(numberFirst, numberSecond);
+  }
+  if (sign === "-") {
+    return subtraction(numberFirst, numberSecond);
+  }
+  if (sign === "÷") {
+    return division(numberFirst, numberSecond);
+  }
+  if (sign === "×") {
+    return multiply(numberFirst, numberSecond);
+  }
+  return numberFirst;
+}
+
+function addValueToScreen(str, button) {
+  const regSign = /[-×+÷=]/;
+  if (str === "0") {
+    if (!regSign.test(button)) {
+      return button;
+    }
+  }
+
+  if (regSign.test(str) && regSign.test(button)) {
+    return str;
+  }
+
+  return str + button;
+}
 
 calculator.addEventListener("click", (event) => {
   if (event.target.tagName != "BUTTON") return;
-  const button = event.target.textContent;
-  const regSign = /[-×+÷=]$/;
+  const buttonValue = event.target.textContent;
 
-  if (button === "C") {
-    screen.textContent = "0";
+  if (buttonValue === "C") {
+    deleteAll();
     return;
   }
-  if (button === "←") {
+  if (buttonValue === "←") {
     deleteLast(screen.textContent);
     return;
   }
-  if (button === "=") {
+  if (buttonValue === "=") {
     screen.textContent = calculate(screen.textContent);
     return;
   }
 
-  if (screen.textContent === "0") {
-    if (regSign.test(button)) return;
-    screen.textContent = button;
-    return;
-  }
-
-  if (regSign.test(screen.textContent) && regSign.test(button)) {
-    return;
-  }
-
-  if (/÷$/.test(screen.textContent) && /0/.test(button)) {
-    return;
-  }
-  screen.textContent += button;
+  screen.textContent = addValueToScreen(screen.textContent, buttonValue);
 });
